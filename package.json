@@ -1,0 +1,26 @@
+{
+  "name": "list-monad",
+  "version": "0.0.1",
+  "description": "List Monad derived from Free Monoid",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenokabe/list-monad.git"
+  },
+  "keywords": [
+    "monads",
+    "moonid",
+    "free",
+    "list",
+    "functional"
+  ],
+  "author": "Ken OKABE",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kenokabe/list-monad/issues"
+  },
+  "homepage": "https://github.com/kenokabe/list-monad#readme"
+}
