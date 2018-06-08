@@ -13,20 +13,19 @@
 
   const xyz = (x)(y)(z);
 
+
+  mlog("--fold----")(
+    (M)(1)(2)(3)
+      .fold((a, b) => a + b)
+  );
+
   mlog("xyz----------")(
     xyz
   );
 
   console.log("+++++++++++++++++++");
 
-
   console.log("------");
-
-
-  mlog("--fold----")(
-    (M)(1)(2)(3)
-      .fold((a, b) => a + b)
-  );
 
   mlog("--fold----")(
     (M)(10)(20)(30)(40)
@@ -37,6 +36,16 @@
       .fold((a, b) => (a)(b * 2))
   );
 
+  const add1 = (a) => (a + 1);
+
+
+  mlog("---fmap---")(
+    (M)(9).fmap(add1)
+  );
+
+  mlog("------")(
+    (M)(999)(9).fmap(add1)
+  );
   mlog("--fmap----")(
     (M)(9)(8)
       .fmap((a) => (a))
@@ -52,78 +61,59 @@
       .fmap(add5)
       .fmap(add5)
   );
-
+  mlog("------")(
+    (M)(add1)(add1).fmap(f => f(3)) //
+  );
+  mlog("------")(
+    (M)(add1).fmap(f => f(3)) //4
+  );
 
   console.log(" array no good");
   console.log( // array no good
     [1, 2, 3].reduce((a, b) => [a, b])
   );
 
-  const add1 = (a) => (a + 1);
-
-  mlog("------")(
-    (M)(999)(9).fmap(add1)
-  );
-  mlog("------")(
-    (M)(9).fmap(add1)
-  );
-
-
-  const ff = (f) => f;
-  mlog("------")(
-    (add1).fmap(ff)
-  );
-
-  mlog("------")(
-    (add1)(add1).fmap(f => f(3)) //4,4
-  );
 
   mlog("------")(
     (M)(9).fmap(x => x)
   );
+
   console.log("------");
-
-  const plus = (x) => (y => x + y);
-  const plus1 = (M)(1)
-    .fmap(plus);
-
-
-  mlog("------")(
-    (M)(1)(2)(3)
-      .fmap((plus1)(plus1))
-  );
 
 
   const double = (a) => (M)(a)(a);
-
-
-
-
 
   mlog("xyz--fmap------")(
     xyz
       .fmap(double)
       .fmap(double)
-      .fmap((add1)(add1))
       .fmap(add1)
   );
 
-
-
-  mlog("--fold----")(
-    (M)(1)(2)(3)
-      .fmap((plus1)(plus1))
-      .fold((a, b) => (a + b))
+  const compose = (f, g) => (x => g(f(x)));
+  const add20 = x => x + 20;
+  const m = (M)(add20)(add20)(add20).fold(compose);
+  //console.log(m);
+  console.log(m.val[0](100));
+  mlog("--fold--compose--")(
+    (M)(3).fmap(M(add20)(add20)(add20))
   );
 
+  /*
+    const plus = (x) => (y => x + y);
+    const plus1 = (M)(1)
+      .fmap(plus);
+
+    mlog("--123 p1 p1----")(
+      (M)(1)(2)(3)
+        .fmap(plus1)
+    );
+    mlog("--fold----")(
+      (M)(1)(2)(3)
+        .fmap((plus1)(plus1))
+        .fold((a, b) => (a + b))
+    );
+  */
 
 
-  const compose = (f, g) => x => g(f(x));
-  const add2 = x => x + 2;
-
-  const m = (M)(add2)(add2)(add2)
-    .fold(compose);
-
-  const p = (M)(0).fmap(m);
-  console.log(p);
 })();
