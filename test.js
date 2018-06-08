@@ -12,16 +12,16 @@
   const z = (M)(10);
 
   const xyz = (x)(y)(z);
-
+  mlog("xyz----------")(
+    xyz
+  );
 
   mlog("--fold----")(
     (M)(1)(2)(3)
       .fold((a, b) => a + b)
   );
 
-  mlog("xyz----------")(
-    xyz
-  );
+
 
   console.log("+++++++++++++++++++");
 
@@ -37,7 +37,6 @@
   );
 
   const add1 = (a) => (a + 1);
-
 
   mlog("---fmap---")(
     (M)(9).fmap(add1)
@@ -92,11 +91,16 @@
 
   const compose = (f, g) => (x => g(f(x)));
   const add20 = x => x + 20;
-  const m = (M)(add20)(add20)(add20).fold(compose);
+  const m = (M)(add20)(add20)(add20);
   //console.log(m);
-  console.log(m.val[0](100));
+  mlog("--fold--compose 0--")(
+    (M)(100).fmap(add20)
+  );
+
   mlog("--fold--compose--")(
-    (M)(3).fmap(M(add20)(add20)(add20))
+    (M)(100).fmap(
+      M(add20)(add20)(add20)
+        .fold(compose).val[0])
   );
 
   /*

@@ -80,7 +80,7 @@
     return M;
   };
 
-  const _M = () => freeMonoid(operator);
+  const _listMonad = () => freeMonoid(operator);
   const operator = list => {
     const M = list.M;
 
@@ -100,7 +100,7 @@
 
   //  const f = (M)(ff).fold(compose).val[0];
   };
-  const listMonad = _M();
+  const listMonad = _listMonad();
 
   //------------------
   const exporting = (typeof module === "object"
