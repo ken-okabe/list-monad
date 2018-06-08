@@ -31,15 +31,27 @@
         value = o[k++];
       }
       let type;
+      let typeVal;
       let type1
+
+      let type1Val;
       while (k < len) {
         type = typeof value;
+        typeVal = value;
+
         if (k in o) {
           value = callback(value, o[k], k, o);
         }
         type1 = typeof value;
+        type1Val = value;
         (type !== type1)
           ? (() => {
+            console.log("TYPE ERROR===============")
+            console.log(type);
+            console.log(typeVal);
+            console.log(type1);
+            console.log(type1Val);
+            console.log("===============TYPE ERROR")
             throw new TypeError();
           })()
           : true;
@@ -85,13 +97,21 @@
     const M = list.M;
 
     list.fold = (op) => {
+
+      //reduce loop
+      /*    list.val.reduce((acc,cur)=>
+          {
+         const x = op(acc,cur);
+       });*/
+      //    return (M)(list.val.typedReduce(op));
+
       try { //check type error
         return (M)(list.val.typedReduce(op, (M)));
       } catch (e) {
         return (M)(list.val.typedReduce(op));
       }
     };
-    const mapOp = f => ((a, b) => (a)(f(b)));
+    const mapOp = f => ((a, b) => (M)(a)(f(b)));
 
     list.fmap = (f) => list.fold(mapOp(f));
 
