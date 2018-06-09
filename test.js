@@ -11,25 +11,26 @@
   const y = (M)(2);
   const z = (M)(10);
 
+  console.log((M)(M)(M));
+
   const xyz = (x)(y)(z);
   mlog("xyz----------")(
     xyz
   );
 
   mlog("--fold----")(
-    (M)(1)(2)(3)
+    (M)(1)(2)(9)
       .fold((a, b) => a + b)
   );
 
   console.log("+++++++++++++++++++");
 
-  console.log("------");
-
-  mlog("--fold----")(
+  mlog("--fold- MM---")(
     (M)(10)(20)(30)(40)
-      .fold((a, b) => (a)(b))
+      .fold((a, b) => (M)(a)(b))
   );
-  mlog("--fold2----")(
+
+  mlog("--fold MM2----")(
     (M)(10)(20)(30)(40)
       .fold((a, b) => (a)(b * 2))
   );
@@ -65,10 +66,6 @@
     (M)(add1).fmap(f => f(3)) //4
   );
 
-  console.log(" array no good");
-  console.log( // array no good
-    [1, 2, 3].reduce((a, b) => [a, b])
-  );
 
 
   mlog("------")(
