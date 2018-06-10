@@ -37,33 +37,46 @@
 
     list.fold = (op) => { //===========================
       //  list1 = fold(list)(op);----------------------
-      const fold = listA => op => (listA.length === 1)
-        ? toList(listA)
+      const fold = list => op => (list.units.length === 2)
+        ? list
         : (() => {
-          console.log("listA=================");
+          console.log("list=================");
 
-          console.log(listA);
-          const [a, b, ...rest] = listA;
-          const a1 = (a === M.val[0])
-            ? (M) : a;
+          console.log(list);
+          const [a, b, ...rest] = list.units;
 
-          const new0 = op(a1, b);
+          console.log("a  b  ===============");
+          console.log(a.val[0]);
+          console.log(b.val[0]);
+
+          const a1 = (a.identity)
+            ? a
+            : a.val[0];
+
+          const b1 = b.val[0];
+
+          const new0 = op(a1, b1);
           console.log("new0=================");
 
-          console.log(new0.M);
+          console.log(new0);
 
-          const new1 = ((a === M.val[0])) && (!new0.M)
-            ? b //(M)  identiyString123
-            : new0;
-          console.log("new1=================");
+          const list1 = ((a.identity) && (!new0.M))
+            ? (() => {
+              const [c, ...rest1] = rest;
+              const c1 = c.val[0];
+              const new1 = op(b1, c1);
+              return toList([M(new1), ...rest1])
+            })() //(M)  identiyString123
+            : toList([M(new0), ...rest]);
 
-          console.log(new1);
-          const listA1 = [new1, ...rest];
-          return fold(listA1)(op); //need TailCallOptimization
+          console.log(list1);
+
+          //    return fold(list1)(op); //need TailCallOptimization
+          return fold(M(1)(2));
         })();
         //----------------------------------
 
-      return fold(list.val)(op);
+      return fold(list)(op);
     //--------------------------------
     }; //===============================================
     const mapOp = f => ((a, b) => (M)(a)(f(b)));
