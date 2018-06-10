@@ -1,31 +1,34 @@
 (() => {
   "use strict";
-  const freeMonoid = (operator) => {
-    const M = (m) => (!!m && (!!m.M || m.identity))
-      ? (m)
-      : (() => {
-        const a = b => (b.identity) //M
-          ? (a)
-          : !b.M
-            ? (a)(M(b))
-            : (() => {
-              const ab = M();
-              ab.units = a.units.concat(b.units);
-              ab.val = ab.units.map(unit => unit.val[0]);
-              return ab; // (a)(b)
-            })();
-        a.val = a.val ? [] : [m];
-        a.units = [a];
-        a.M = (m) => M(m);
-        a.M.identity = true;
-        a.M.val = (m) => (m);
-        operator(a);
-        return a;
-      })();
-    M.identity = true;
-    M.val = (m) => (m);
+  const freeMonoid = (operator) => (() => {
+    const M = (() => { //(M)(a)(b)
+      const m = (a) => (!!a && (!!a.M || a.identity)) //left id M
+        ? (a)
+        : (() => {
+          const ma = b => (b.identity) //right id M
+            ? (ma)
+            : !b.M
+              ? (ma)(M(b))
+              : (() => {
+                const mab = M();
+                const [m, ...bUnits] = b.units;
+                mab.units = ma.units.concat(bUnits);
+                mab.val = mab.units.map(unit => unit.val[0]);
+                return mab; // (m)(a)(b)
+              })();
+          ma.val = [a];
+          ma.M = m;
+          ma.units = m.units.concat(ma);
+          operator(ma);
+          return ma;
+        })();
+      m.identity = true;
+      m.val = ["__IDENTITY__"];
+      m.units = [m];
+      return m;
+    })();
     return M;
-  };
+  })();
 
   const _listMonad = () => freeMonoid(operator);
   const operator = list => {
@@ -34,22 +37,33 @@
 
     list.fold = (op) => { //===========================
       //  list1 = fold(list)(op);----------------------
-      const fold = list => op => (list.length === 1)
-        ? toList(list)
+      const fold = listA => op => (listA.length === 1)
+        ? toList(listA)
         : (() => {
-          const [a, b, c, ...rest] = list;
-          const new1 = op(a, b);
-          const list1 = !!(new1.M) ||
-          ((typeof a) === (typeof b)
-          && (typeof b) === (typeof new1))
-            ? [new1, c, ...rest]
-            : [b, c, ...rest];
-          const list2 = (!c) ? [new1] : list1;
-          return fold(list2)(op); //need TailCallOptimization
+          console.log("listA=================");
+
+          console.log(listA);
+          const [a, b, ...rest] = listA;
+          const a1 = (a === M.val[0])
+            ? (M) : a;
+
+          const new0 = op(a1, b);
+          console.log("new0=================");
+
+          console.log(new0.M);
+
+          const new1 = ((a === M.val[0])) && (!new0.M)
+            ? b //(M)  identiyString123
+            : new0;
+          console.log("new1=================");
+
+          console.log(new1);
+          const listA1 = [new1, ...rest];
+          return fold(listA1)(op); //need TailCallOptimization
         })();
-      //----------------------------------
-      const listVal0 = [M, ...list.val];
-      return fold(listVal0)(op);
+        //----------------------------------
+
+      return fold(list.val)(op);
     //--------------------------------
     }; //===============================================
     const mapOp = f => ((a, b) => (M)(a)(f(b)));
