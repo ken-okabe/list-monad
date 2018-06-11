@@ -44,9 +44,8 @@
           const aVal = (a.val.length === 1)
             ? a.val[0] : a.val;
           const a1Val = b.val.map(bVal => op(aVal, bVal))[0];
-          //identity * monoid should be monoid
-          const err = (!!a.identity) && (!a1Val.M);
-          const a1 = (M)(err ? b : a1Val); //error ->just shift
+          const a1 = (!!a.identity) && (!a1Val.M)
+            ? (M)(b) : (M)(a1Val); //identity operation
           return a1; // next a
         });
       return fold(list)((M)(op).val[0]); //(op) wrap and val
