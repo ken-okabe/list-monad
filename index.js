@@ -38,24 +38,22 @@
   const _listMonad = () => freeMonoid(operator);
   const operator = list => {
     const M = list.M;
-    const toList = arr => arr.reduce((a, b) => (a)(b), (M));
     list.fold = (op) => { //===========================
       //  list1 = fold(list)(op);----------------------
-      const fold = list => op => [M, ...list.units]
+      const fold = list => op => [M, ...list.units] //init = M
         .reduce((a, b) => {
           const aVal = (a.val.length === 1)
             ? a.val[0] : a.val;
           const a1Val = b.val.map(bVal => op(aVal, bVal))[0];
           //identity * monoid should be monoid
           const err = (!!a.identity) && (!a1Val.M);
-          const a1Val2 = err ? b : a1Val;
-          const a1 = (M)(a1Val2);
-          return a1;
+          const a1 = (M)(err ? b : a1Val); //error ->just shift
+          return a1; // next a
         }); //wrap and val for op
       return fold(list)((M)(op).val[0]);
     }; //===============================================
-    const mapOp = f => (a, b) => (M)(a)(f(b));
     list.fmap = (f) => {
+      const mapOp = f => (a, b) => (M)(a)(f(b));
       const f1 = (M)(f).val[0]; //list and val
       return list.fold(mapOp(f1));
     };

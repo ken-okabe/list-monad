@@ -3,6 +3,8 @@
 
   const M = require("./index");
 
+  const toList = arr => arr.reduce((a, b) => (a)(b), (M));
+
   const mlog = m => o => {
     console.log(m + "\n" + o.val);
     return o;
@@ -31,13 +33,10 @@
   );
 
 
-
   mlog("--fold- MM---")(
     (M)(10)(20)(30)(40)
       .fold((a, b) => (M)(a)(b)(a)(b))
   );
-
-
 
   const add1 = (a) => (a + 1);
 
@@ -70,14 +69,11 @@
     (M)(add1).fmap(f => f(3)) //4
   );
 
-
-
   mlog("------")(
     (M)(9).fmap(x => x)
   );
 
   console.log("------");
-
 
   const double = (a) => (M)(a)(a);
 
@@ -101,7 +97,6 @@
     )
   );
 
-
   const plus = (x) => (y => x + y);
   const plus1 = (M)(1)
     .fmap(plus);
@@ -116,10 +111,6 @@
       .fold((a, b) => (a + b))
   );
 
-  /*
-    console.log(
-      [1].reduce((a, b) => (a * a + a * b + b))
-    );
-  */
+
 
 })();
