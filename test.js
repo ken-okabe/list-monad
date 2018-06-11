@@ -9,6 +9,46 @@
     console.log(m + "\n" + o.val);
     return o;
   };
+
+
+
+  const f = x => (M)(x * 3);
+  const g = x => (M)(x + 10);
+  console.log(
+    (M)(1).fmap(f)
+  );
+  console.log(
+    f(1)
+  );
+  console.log("---------------");
+  console.log(
+    (M)(5).fmap(M)
+  );
+  console.log(
+    (M)(5)
+  );
+
+  console.log("==================");
+  console.log(
+    (M)(2)
+      .fmap(f)
+      .fmap(g)
+  );
+
+
+  console.log(
+    (M)(2)
+      .fmap(x => f(x)
+        .fmap(g))
+  );
+
+
+
+  mlog("----------")(
+    (M)(1)(2)(M)(3)
+  );
+
+
   const x = (M)(1);
   const y = (M)(2);
   const z = (M)(10);
@@ -110,7 +150,6 @@
       .fmap(plus1)
       .fold((a, b) => (a + b))
   );
-
 
 
 })();
