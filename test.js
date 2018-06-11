@@ -10,37 +10,41 @@
     return o;
   };
 
+  const util = require("util");
+  const validate = a => b => util.inspect(a) === util.inspect(b)
+    ? true : false;
 
-
-  const f = x => (M)(x * 3);
-  const g = x => (M)(x + 10);
-  console.log(
-    (M)(1).fmap(f)
-  );
-  console.log(
-    f(1)
-  );
-  console.log("---------------");
-  console.log(
-    (M)(5).fmap(M)
-  );
-  console.log(
-    (M)(5)
-  );
-
-  console.log("==================");
-  console.log(
-    (M)(2)
-      .fmap(f)
-      .fmap(g)
-  );
-
+  const f = x => (M)(x + 7);
+  const g = x => (M)(x * 5);
+  const a = 9;
+  const m = (M)(3);
 
   console.log(
-    (M)(2)
-      .fmap(x => f(x)
-        .fmap(g))
+    validate(
+      (M)(a).bind(f)
+    )(
+      f(a)
+    )
   );
+  console.log(
+    validate(
+      m.bind(M)
+    )(
+      m
+    )
+  );
+  console.log(
+    validate(
+      m.bind(f)
+        .bind(g)
+    )(
+      m.bind(x => f(x)
+        .bind(g))
+    )
+  );
+
+
+
 
 
 
@@ -80,76 +84,78 @@
 
   const add1 = (a) => (a + 1);
 
-  mlog("---fmap---")(
-    (M)(9).fmap(add1)
+  mlog("---bind---")(
+    (M)(9).bind(add1)
   );
 
   mlog("------")(
-    (M)(999)(9).fmap(add1)
+    (M)(999)(9).bind(add1)
   );
-  mlog("--fmap----")(
+  mlog("--bind----")(
     (M)(9)(8)
-      .fmap((a) => (a))
+      .bind((a) => (a))
   );
   const add5 = (a => a + 5);
-  mlog("--fmap5----")(
+  mlog("--bind5----")(
     (M)(100)(101)
-      .fmap(add5)
+      .bind(add5)
   );
   const add10 = a => a + 5;
-  mlog("--fmap10----")(
+  mlog("--bind10----")(
     (M)(100)(101)
-      .fmap(add5)
-      .fmap(add5)
+      .bind(add5)
+      .bind(add5)
   );
   mlog("------")(
-    (M)(add1)(add1).fmap(f => f(3)) //
+    (M)(add1)(add1).bind(f => f(3)) //
   );
   mlog("------")(
-    (M)(add1).fmap(f => f(3)) //4
+    (M)(add1).bind(f => f(3)) //4
   );
 
   mlog("------")(
-    (M)(9).fmap(x => x)
+    (M)(9).bind(x => x)
   );
 
   console.log("------");
 
   const double = (a) => (M)(a)(a);
 
-  mlog("xyz--fmap------")(
+  mlog("xyz--bind------")(
     xyz
-      .fmap(double)
-      .fmap(double)
-      .fmap(add1)
+      .bind(double)
+      .bind(double)
+      .bind(add1)
   );
 
   const compose = (f, g) => (x => g(f(x)));
   const add20 = x => x + 20;
   //console.log(m);
   mlog("--fold--compose 0--")(
-    (M)(100).fmap(add20)
+    (M)(100).bind(add20)
   );
 
   mlog("--fold--compose--")(
-    (M)(100)(200).fmap(
+    (M)(100)(200).bind(
       M(add20)(add20)(add20).fold(compose)
     )
   );
 
   const plus = (x) => (y => x + y);
   const plus1 = (M)(1)
-    .fmap(plus);
+    .bind(plus);
 
   mlog("--123 p1 p1----")(
     (M)(1)(2)(3)
-      .fmap(plus1)
+      .bind(plus1)
   );
   mlog("--fold----")(
     (M)(1)(2)(3)
-      .fmap(plus1)
+      .bind(plus1)
       .fold((a, b) => (a + b))
   );
+
+
 
 
 })();

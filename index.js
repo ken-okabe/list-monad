@@ -51,7 +51,7 @@
         });
       return fold(list)((M)(op).val[0]); //(op) wrap and val
     }; //===============================================
-    list.fmap = (f) => {
+    list.bind = (f) => {
       const mapOp = f => (a, b) => (M)(a)(f(b));
       const f1 = (M)(f).val[0]; //list and val
       return list.fold(mapOp(f1));
