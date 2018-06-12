@@ -10,11 +10,6 @@
     return o;
   };
 
-  mlog("fold to map")(
-    (M)(10)(20)(30)(40)
-      .bind(a => a * 2)
-  );
-
   const util = require("util");
   const validate = a => b => util.inspect(a) === util.inspect(b)
     ? true : false;
@@ -22,7 +17,7 @@
   const f = x => (M)(x + 7);
   const g = x => (M)(x * 5);
   const a = 9;
-  const m = (M)(3);
+  const m = (M)(3)(5)(7);
 
   console.log(
     validate(
@@ -76,10 +71,9 @@
   console.log("IO monoid=================");
   (M)(1)(2)(9)
     .fold((a, b) => {
-      console.log("--------------");
-      console.log("IO a:" + a);
-      console.log("IO b:" + b);
-      return (b);
+      const result = a + b;
+      console.log("IO: " + result);
+      return (result);
     });
 
   mlog("monoid ============")(
@@ -186,7 +180,6 @@
       .bind(plus1)
       .fold((a, b) => (a + b))
   );
-
 
 
 })();
