@@ -10,6 +10,11 @@
     return o;
   };
 
+  mlog("fold to map")(
+    (M)(10)(20)(30)(40)
+      .bind(a => a * 2)
+  );
+
   const util = require("util");
   const validate = a => b => util.inspect(a) === util.inspect(b)
     ? true : false;
@@ -43,11 +48,6 @@
     )
   );
 
-
-
-
-
-
   mlog("----------")(
     (M)(1)(2)(M)(3)
   );
@@ -66,23 +66,54 @@
 
   mlog("--fold----")(
     (M)(1)(2)(9)
-      .fold((a, b) => a + b)
+      .fold((a, b) => (a + b))
   );
+  mlog("--fold2----")(
+    (M)(2)(1)
+      .fold((a, b) => (10 * a + b))
+  );
+
+  console.log("IO monoid=================");
+  (M)(1)(2)(9)
+    .fold((a, b) => {
+      console.log("--------------");
+      console.log("IO a:" + a);
+      console.log("IO b:" + b);
+      return (b);
+    });
+
+  mlog("monoid ============")(
+    (M)(10)(20)(30)
+      .fold((a, b) => (M)(a)(b))
+  );
+
+  mlog("monoid ============")(
+    (M)(10)(20)(30)
+      .fold((a, b) => (M)(a)(b * 2))
+  );
+
+
+  console.log("state monoid=================");
+  (M)("state0")("update1")("update2")
+    .fold((oldState, update) => {
+      console.log("sate:" + oldState);
+      console.log("update:" + update);
+      return (update);
+    });
 
   console.log("+++++++++++++++++++");
 
   mlog("fold to map")(
     (M)(10)(20)(30)(40)
-      .fold((a, b) => (M)(a)(b * 2))
+      .bind(a => a * 2)
   );
-
 
   mlog("--fold- MM---")(
     (M)(10)(20)(30)(40)
       .fold((a, b) => (M)(a)(b)(a)(b))
   );
 
-  const add1 = (a) => (a + 1);
+  const add1 = (a) => (M)(a + 1);
 
   mlog("---bind---")(
     (M)(9).bind(add1)
@@ -128,8 +159,9 @@
       .bind(add1)
   );
 
-  const compose = (f, g) => (x => g(f(x)));
+
   const add20 = x => x + 20;
+  const compose = (f, g) => (x => g(f(x)));
   //console.log(m);
   mlog("--fold--compose 0--")(
     (M)(100).bind(add20)
@@ -154,7 +186,6 @@
       .bind(plus1)
       .fold((a, b) => (a + b))
   );
-
 
 
 

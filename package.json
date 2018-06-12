@@ -1,6 +1,6 @@
 {
   "name": "list-monad",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "List Monad derived from Free Monoid",
   "main": "index.js",
   "scripts": {

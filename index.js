@@ -38,24 +38,30 @@
   const _listMonad = () => freeMonoid(operator);
   const operator = list => {
     const M = list.M;
+    const toList = arr => arr.reduce((a, b) => (a)(b), (M));
     list.fold = (op) => { //  fold(list)(op);-----
-      const fold = list => op => [M, ...list.units] //init = M
+      const fold = list => op => list.units //init = M
         .reduce((a, b) => {
-          const aVal = (a.val.length === 1)
-            ? a.val[0] : a.val;
+          const aVal = (a.val.length === 1) ? a.val[0] : a.val;
           const a1Val = b.val.map(bVal => op(aVal, bVal))[0];
-          const a1 = (!!a.identity) && (!a1Val.M)
-            ? (M)(b) : (M)(a1Val); //identity operation
-          return a1; // next a
+          return (M)(a1Val);
         });
       return fold(list)((M)(op).val[0]); //(op) wrap and val
-    }; //===============================================
-    list.bind = (f) => {
-      const mapOp = f => (a, b) => (M)(a)(f(b));
-      const f1 = (M)(f).val[0]; //list and val
-      return list.fold(mapOp(f1));
     };
-  };
+    list.bind = (f) => {
+      const f1 = (M)(f).val[0]; //list and val
+      const list1 = list.units.map(unit => {
+        const val = (unit.val.length === 1)
+          ? unit.val[0] : unit.val;
+        return f1(val);
+      });
+      return toList(list1);
+    };
+
+
+  }; //===============================================
+
+
   const listMonad = _listMonad();
   //------------------
   const exporting = (typeof module === "object"
