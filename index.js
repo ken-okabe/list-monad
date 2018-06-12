@@ -39,24 +39,19 @@
   const operator = list => {
     const M = list.M;
     const toList = arr => arr.reduce((a, b) => (a)(b), (M));
+    const mVal = (f) => (M)(f).val[0];
     list.Val = () => (list.val.length === 1)
       ? list.val[0] : list.val;
-    list.fold = (op) => { //  fold(list)(op);-----
-      const fold = list => op => list.units //init = M
-        .reduce((a, b) => {
-          const a1Val = b.val.map(bVal => op(a.Val(), bVal))[0];
-          return (M)(a1Val);
-        });
-      const op1 = (M)(op).val[0];
-      return fold(list)(op1); //(op) wrap and val
-    };
+    list.fold = (op) => list.units //init = M
+      .reduce((a, b) => {
+        const a1Val = b.val
+          .map(bVal => mVal(op)(a.Val(), bVal))[0];
+        return (M)(a1Val);
+      });
     list.bind = (f) => {
-      const f1 = (M)(f).val[0]; //list and val
-      const list1 = list.units.map(unit => f1(unit.Val()));
+      const list1 = list.units.map(unit => mVal(f)(unit.Val()));
       return toList(list1);
     };
-
-
   }; //===============================================
 
 
