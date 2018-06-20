@@ -1,4 +1,5 @@
-(() => {
+(
+  () => {
   "use strict";
 
   const M = require("./index");
@@ -67,6 +68,10 @@
     (M)(2)(1)
       .fold((a, b) => (10 * a + b))
   );
+  mlog("--fold3----")(
+    (M)(2)(1)
+      .fold((a, b) => (M)(b))
+  );
 
   console.log("IO monoid=================");
   (M)(1)(2)(9)
@@ -76,16 +81,45 @@
       return (result);
     });
 
-  mlog("monoid ============")(
+  mlog("monoid map============")(
     (M)(10)(20)(30)
       .fold((a, b) => (M)(a)(b))
   );
 
-  mlog("monoid ============")(
+  mlog("monoid map============")(
     (M)(10)(20)(30)
       .fold((a, b) => (M)(a)(b * 2))
   );
 
+  mlog("monoid map fail============")(
+    (M)(10)(20)(30)
+      .fold((a, b) => (M)(a * 2)(b))
+  );
+
+  mlog("max ============")(
+    (M)(10)(20)(30)
+      .fold((a, b) => (a > b) ? a : b)
+  );
+
+  mlog("min ============")(
+    (M)(10)(20)(30)
+      .fold((a, b) => (a < b) ? a : b)
+  );
+
+  mlog("first ============")(
+    (M)(10)(20)(30)
+      .fold((a, b) => (M)(a))
+  );
+  mlog("last ============")(
+    (M)(10)(20)(30)
+      .fold((a, b) => (M)(b))
+  );
+
+  mlog("monoid map fail============")(
+    (M)(10)(20)(30)
+      .fold((A, B) => ((M)(A * 2)
+        .fold((a, b) => (M)(b))))
+  );
 
   console.log("state monoid=================");
   (M)("state0")("update1")("update2")
