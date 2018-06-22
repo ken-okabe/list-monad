@@ -36,7 +36,8 @@
   );
   console.log(
     validate(
-      m.bind(f)
+      m
+        .bind(f)
         .bind(g)
     )(
       m.bind(x => f(x)
@@ -73,28 +74,99 @@
       .fold((a, b) => (M)(b))
   );
 
-  console.log("IO monoid=================");
+  console.log("Console monoid=================");
   (M)(1)(2)(9)
     .fold((a, b) => {
       const result = a + b;
-      console.log("IO: " + result);
+      console.log("Console: " + result);
       return (result);
     });
+
+  console.log("Operational monoid=================");
+  const f1 = x => {
+    console.log("function1--------");
+    console.log("old " + x);
+    const newVal = x + 1;
+    console.log("new " + newVal);
+    return newVal;
+  };
+  const f2 = x => {
+    console.log("function2--------");
+    console.log("old " + x);
+    const newVal = x + 3;
+    console.log("new " + newVal);
+    return newVal;
+  };
+  const f3 = x => {
+    console.log("function3--------");
+    console.log("old " + x);
+    const newVal = x + 1000;
+    console.log("new " + newVal);
+    return newVal;
+  };
+
+  (M)(1)(f1)(f2)(f3)
+    .fold((a, b) => b(a));
+  console.log("Operational monoid compostition=================");
+  const compose = (f, g) => (x => g(f(x)));
+  const f123 = (M)(f1)(f2)(f3)
+    .fold(compose);
+
+  (M)(1)(f123)
+    .fold((a, b) => b(a));
+
+  const op = (a, b) => b(a);
+  const plus1 = (a) => (a + 1);
+
+  mlog("===plus1 monoid ===")(
+
+    (M)(9)(plus1).fold(op)
+
+  );
+
+  mlog("===plus1 plus1 monoid ===")(
+
+    (M)(9)(plus1)(plus1).fold(op)
+
+  );
+
+  mlog("===plus1 ERROR monoid ===")(
+    false
+    //  (M)(100)(110)(plus1).fold(op)
+
+  );
+
+  const op1 = (a, b) => (typeof b
+  == "function")
+    ? b(a)
+    : (M)(a)(b);
+
+  const plus1Map = (a) => a.map(x => x + 1);
+
+  mlog("===plus1 op1 monoid ===")(
+
+    (M)(100)(110)(plus1Map).fold(op1)
+
+  );
+  mlog("===plus1plus1 op1 monoid ===")(
+
+    (M)(100)(110)(plus1Map)(plus1Map).fold(op1)
+
+  );
+
+  const fmap = (f) => (a) => a.map(f);
+
 
   mlog("monoid map============")(
     (M)(10)(20)(30)
       .fold((a, b) => (M)(a)(b))
   );
 
-  mlog("monoid map============")(
-    (M)(10)(20)(30)
-      .fold((a, b) => (M)(a)(b * 2))
+  mlog("monoid map2============")(
+    (M)(10)(20)(30)(fmap(a => a * 2)).fold(op1)
   );
 
-  mlog("monoid map fail============")(
-    (M)(10)(20)(30)
-      .fold((a, b) => (M)(a * 2)(b))
-  );
+
 
   mlog("max ============")(
     (M)(10)(20)(30)
@@ -188,32 +260,42 @@
   );
 
 
-  const add20 = x => x + 20;
-  const compose = (f, g) => (x => g(f(x)));
+  const add20 = x => (M)(x + 20);
+
   //console.log(m);
   mlog("--fold--compose 0--")(
     (M)(100).bind(add20)
   );
 
+  //const compose = (f, g) => (x => g(f(x))); //NG non monoid
+  const composeM = (f, g) => (
+  x => (M)(x)
+    .bind(f)
+    .bind(g)
+  );
+
   mlog("--fold--compose--")(
     (M)(100)(200).bind(
-      M(add20)(add20)(add20).fold(compose)
+      M(add20)(add20)(add20).fold(composeM)
     )
   );
 
-  const plus = (x) => (y => x + y);
-  const plus1 = (M)(1)
-    .bind(plus);
 
-  mlog("--123 p1 p1----")(
-    (M)(1)(2)(3)
-      .bind(plus1)
-  );
-  mlog("--fold----")(
-    (M)(1)(2)(3)
-      .bind(plus1)
-      .fold((a, b) => (a + b))
-  );
+  (() => {
 
+    const plus = (x) => (y => x + y);
+    const plus1 = (M)(1)
+      .bind(plus);
+
+    mlog("--123 p1 p1----")(
+      (M)(1)(2)(3)
+        .bind(plus1)
+    );
+    mlog("--fold----")(
+      (M)(1)(2)(3)
+        .bind(plus1)
+        .fold((a, b) => (a + b))
+    );
+  })();
 
 })();

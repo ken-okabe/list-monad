@@ -56,8 +56,6 @@
       return toList(list1);
     };
   }; //===============================================
-
-
   const listMonad = _listMonad();
   //------------------
   const exporting = (typeof module === "object"
