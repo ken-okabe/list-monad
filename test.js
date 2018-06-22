@@ -107,6 +107,7 @@
 
   (M)(1)(f1)(f2)(f3)
     .fold((a, b) => b(a));
+
   console.log("Operational monoid compostition=================");
   const compose = (f, g) => (x => g(f(x)));
   const f123 = (M)(f1)(f2)(f3)
@@ -187,11 +188,24 @@
       .fold((a, b) => (M)(b))
   );
 
-  mlog("monoid map fail============")(
-    (M)(10)(20)(30)
-      .fold((A, B) => ((M)(A * 2)
-        .fold((a, b) => (M)(b))))
+  mlog("even / odd ============")(
+    (M)(1)(2)(3)(4)(5)(6)(7)(8)(9)(
+      fmap(a => ((a % 2) === 0)
+        ? (M)(a)
+        : (M))
+    )
+      .fold(op1)
   );
+
+
+
+
+
+
+
+
+
+
 
   console.log("state monoid=================");
   (M)("state0")("update1")("update2")
