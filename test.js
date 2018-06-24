@@ -20,6 +20,20 @@
   const a = 9;
   const m = (M)(3)(5)(7);
 
+  //  M bind f = f = f bind M
+
+  console.log(
+    (M).bind(f)
+  );
+
+  console.log(
+    validate(
+      (M).bind(f)
+    )(
+      f
+    )
+  );
+
   console.log(
     validate(
       (M)(a).bind(f)
@@ -72,6 +86,17 @@
   mlog("--fold3----")(
     (M)(2)(1)
       .fold((a, b) => (M)(b))
+  );
+
+  const plus = (a, b) => a + b;
+  mlog("--plus----")(
+    (M)(1)(2)(3)(4)(5)(6)(7)(8)(9)(10)
+      .fold(plus)
+  );
+  mlog("--plus plus----")(
+    (M)(1)(2)(3)(4)(5)(6)(7)(8)(9)(10)
+      .fold(plus)
+      .fold(plus)
   );
 
   console.log("Console monoid=================");
@@ -167,6 +192,14 @@
     (M)(10)(20)(30)(fmap(a => a * 2)).fold(op1)
   );
 
+  const list = (M)(10)(20)(30);
+
+  const f_2 = a => a * 2;
+
+  mlog("monoid list map3============")(
+    (list)(fmap(f_2)).fold(op1)
+  );
+
 
 
   mlog("max ============")(
@@ -199,14 +232,6 @@
 
 
 
-
-
-
-
-
-
-
-
   console.log("state monoid=================");
   (M)("state0")("update1")("update2")
     .fold((oldState, update) => {
@@ -222,11 +247,6 @@
       .bind(a => a * 2)
   );
 
-  mlog("--fold- MM---")(
-    (M)(10)(20)(30)(40)
-      .fold((a, b) => (M)(a)(b)(a)(b))
-  );
-
   const add1 = (a) => (M)(a + 1);
 
   mlog("---bind---")(
@@ -240,17 +260,7 @@
     (M)(9)(8)
       .bind((a) => (a))
   );
-  const add5 = (a => a + 5);
-  mlog("--bind5----")(
-    (M)(100)(101)
-      .bind(add5)
-  );
-  const add10 = a => a + 5;
-  mlog("--bind10----")(
-    (M)(100)(101)
-      .bind(add5)
-      .bind(add5)
-  );
+
   mlog("------")(
     (M)(add1)(add1).bind(f => f(3)) //
   );
@@ -274,30 +284,37 @@
   );
 
 
-  const add20 = x => (M)(x + 20);
-
-  //console.log(m);
-  mlog("--fold--compose 0--")(
-    (M)(100).bind(add20)
+  const add5 = a => (M)(a + 5);
+  mlog("--bind5----")(
+    (M)(100)(200)
+      .bind(add5)
   );
 
-  //const compose = (f, g) => (x => g(f(x))); //NG non monoid
+  mlog("--bind5 bind5----")(
+    (M)(100)(200)
+      .bind(add5)
+      .bind(add5)
+  );
+
   const composeM = (f, g) => (
   x => (M)(x)
     .bind(f)
     .bind(g)
   );
 
-  mlog("--fold--compose--")(
-    (M)(100)(200).bind(
-      M(add20)(add20)(add20).fold(composeM)
-    )
+  //monad
+  const add20 = (M)(add5)(add5)(add5)(add5)
+    .fold(composeM);
+
+  mlog("--fold--compose--add20")(
+    (M)(100)(200)
+      .bind(add20)
   );
 
 
   (() => {
 
-    const plus = (x) => (y => x + y);
+    const plus = (x) => (M)(y => x + y);
     const plus1 = (M)(1)
       .bind(plus);
 

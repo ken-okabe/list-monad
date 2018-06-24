@@ -28,8 +28,10 @@
             return ma;
           })();
       m.identity = true;
+      m.M = m;
       m.val = [m]; //["__IDENTITY__"];
       m.units = [m];
+      operator(m);
       return m;
     })();
     return M;
@@ -42,7 +44,7 @@
     const mVal = (f) => (M)(f).val[0];
     list.Val = () => (list.val.length === 1)
       ? list.val[0] : list.val;
-    list.fold = (op) => [M, ...list.units] //init = M
+    list.fold = (op) => list.units //init = M
       .reduce((a, b) => !!a.identity
         ? b
         : (() => {
@@ -51,10 +53,10 @@
 
           return (M)(a1Val);
         })());
-    list.bind = (f) => {
-      const list1 = list.units.map(unit => mVal(f)(unit.Val()));
-      return toList(list1);
-    };
+    list.bind = (f) => !!list.identity
+      ? (f)
+      : toList(list.units.map(unit => mVal(f)(unit.Val())));
+
   }; //===============================================
   const listMonad = _listMonad();
   //------------------
