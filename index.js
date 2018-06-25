@@ -1,17 +1,18 @@
 (() => {
   "use strict";
   const freeMonoid = (operator) => (() => {
-    Array.prototype.flatten = function() {
-      return Array.prototype.concat.apply([], this);
-    };
+    const flattenDeep = (arr1) => arr1
+      .reduce((acc, val) => Array.isArray(val)
+        ? acc.concat(flattenDeep(val))
+        : acc.concat(val), []);
     const M = (() => { //(M)(a)(b)
       const toList = arr => arr.reduce((a, b) => (a)(b), (M));
       const m = (a) => (Array.isArray(a))
-        ? toList(a.flatten())
-        : (!!a && (!!a.M || a.identity)) //left id M
+        ? toList(flattenDeep(a))
+        : (!!a && !!a.M)
           ? (a)
           : (() => {
-            const ma = b => (b.identity) //right id M
+            const ma = b => (a === m) || (b === m) //left right id
               ? (ma)
               : !b.M
                 ? (ma)(M(b))
@@ -27,7 +28,6 @@
             operator(ma);
             return ma;
           })();
-      m.identity = true;
       m.M = m;
       m.val = [m]; //["__IDENTITY__"];
       m.units = [m];
@@ -45,15 +45,12 @@
     list.Val = () => (list.val.length === 1)
       ? list.val[0] : list.val;
     list.fold = (op) => list.units //init = M
-      .reduce((a, b) => !!a.identity
-        ? b
-        : (() => {
-          const a1Val = b.val
-            .map(bVal => mVal(op)(a.Val(), bVal))[0];
-
-          return (M)(a1Val);
-        })());
-    list.bind = (f) => !!list.identity
+      .reduce((a, b) => {
+        const a1Val = b.val
+          .map(bVal => mVal(op)(a.Val(), bVal))[0];
+        return (M)(a1Val);
+      }) ;
+    list.bind = (f) => list === M
       ? (f)
       : toList(list.units.map(unit => mVal(f)(unit.Val())));
 

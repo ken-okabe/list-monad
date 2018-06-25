@@ -12,8 +12,11 @@
   };
 
   const util = require("util");
-  const validate = a => b => util.inspect(a) === util.inspect(b)
+  const inspect = x => util.inspect(x);
+  const validate = a => b => inspect(a) === inspect(b)
     ? true : false;
+
+  const ilog = (x) => console.log(inspect(x));
 
   const f = x => (M)(x + 7);
   const g = x => (M)(x * 5);
@@ -22,17 +25,21 @@
 
   //  M bind f = f = f bind M
 
+  const fa = x => [x + 7];
+  const ga = x => [x * 5];
+  const aa = 9;
+  const ma = [3, 5, 7];
+
+
+
+
+
+
+  console.log("==--==--==");
   console.log(
     (M).bind(f)
   );
 
-  console.log(
-    validate(
-      (M).bind(f)
-    )(
-      f
-    )
-  );
 
   console.log(
     validate(
