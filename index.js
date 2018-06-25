@@ -12,7 +12,7 @@
         : (!!a && !!a.M)
           ? (a)
           : (() => {
-            const ma = b => (a === m) || (b === m) //left right id
+            const ma = b => (b === m) // right id
               ? (ma)
               : !b.M
                 ? (ma)(M(b))
@@ -32,7 +32,7 @@
       m.val = [m]; //["__IDENTITY__"];
       m.units = [m];
       operator(m);
-      return m;
+      return (m);
     })();
     return M;
   })();
@@ -53,7 +53,6 @@
     list.bind = (f) => list === M
       ? (f)
       : toList(list.units.map(unit => mVal(f)(unit.Val())));
-
   }; //===============================================
   const listMonad = _listMonad();
   //------------------
